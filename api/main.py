@@ -1,11 +1,11 @@
 import random
 from fastapi import FastAPI
 import requests
-
+from services.db_service.UserService import create_user, update_status
 from models.db.base import Base
-from models.pydentic.user_model import User
 from models.pydentic.auth_model import SendSms, Login
 from services.db_service.opt_service import opt_create, otp_storage_time, validate_otp
+from models.pydentic.registry_model import RegistryModel
 
 app = FastAPI()
 
@@ -30,7 +30,7 @@ def veryfi_phone(data: Login):
     if not otp_storage_time(data.phone, data.sms_code):
         return {"message": "время ожидания смс истекло"}
 
-    # у пользователя нужно поставить флаг верифицирован
+    update_status(data.phone)
     return {"message": "вы успешно авторизованны"}
 
 
@@ -41,8 +41,13 @@ def main():
 
 
 @app.post("/registry")
-def registry():
-    pass
+def registry(data: RegistryModel):
+    passwd = "test"
+    create_user(data.name, passwd, data.subscription)
+    return {"message": "success"}
+
+
+
 
 
 
