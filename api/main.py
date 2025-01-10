@@ -1,54 +1,48 @@
 import random
 from fastapi import FastAPI
 import requests
+
+from models.db.base import Base
 from models.pydentic.user_model import User
+from models.pydentic.auth_model import SendSms, Login
+from services.db_service.opt_service import opt_create, otp_storage_time, validate_otp
 
 app = FastAPI()
 
 
 # еще есть регистрация её отдельно вынесу в фйал как и авторизацию
+APP_KEY = "VJE190N841KGED5V624GD9EOFOB7XG89D819V56O1Y6B29P6I59792X991OGYY49"
+
+
+@app.post('/send-sms')
+def send_sms(data: SendSms):
+    random_code = random.randint(1000, 9999)
+    opt_create(data.phone, random_code)
+    requests.post(f"https://smspilot.ru/api.php?send={random_code}&to={data.phone}&apikey={APP_KEY}")
+    return {"message": "код успешно отправлен"}
+
+
+@app.post('/veryfi-phone')
+def veryfi_phone(data: Login):
+    if not validate_otp(data.phone, data.sms_code):
+        return {"message": "неверный код или номер телефона"}
+
+    if not otp_storage_time(data.phone, data.sms_code):
+        return {"message": "время ожидания смс истекло"}
+
+    # у пользователя нужно поставить флаг верифицирован
+    return {"message": "вы успешно авторизованны"}
 
 
 @app.get("/")
 def main():
+    print(Base.metadata.tables.keys())
     return {"message": "Hello World"}
 
 
-@app.post("/send-sms")
-def send_sms(user: User):
-    # otp_record = db.session.query(OTPCode).filter_by(phone=phone).first()
-    otp_record = ''
-    if not otp_record:
-        return False, "Неверный номер телефона"
-
-    code = random.randint(1000, 9999)
-    requests.post("отправить смс к номеру", user.phone)
-
-
-@app.post("/auth")
-def auth(user_data: User):
+@app.post("/registry")
+def registry():
     pass
-    # elif user_data.sms is not None and user_data.phone:
-    #     pass
-
-
-def validate_otp(phone, input_otp):
-    # otp_record = db.session.query(OTPCode).filter_by(phone=phone).first()
-    otp_record = ''
-    if not otp_record:
-        return False, "Неверный номер телефона"
-
-    if otp_record.otp != input_otp:
-        return False, "Неверный код OTP"
-
-    if otp_record.expires_at < datetime.utcnow():
-        return False, "Код OTP истек"
-
-    return True, "OTP успешно подтвержден"
-
-
-# d = requests.get("https://smspilot.ru/api.php?balance=rur&apikey=VJE190N841KGED5V624GD9EOFOB7XG89D819V56O1Y6B29P6I59792X991OGYY49")
-# print(d.text)
 
 
 

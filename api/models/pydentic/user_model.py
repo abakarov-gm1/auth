@@ -5,3 +5,4 @@ class User(BaseModel):
     phone: str
     sms: str
 
+
