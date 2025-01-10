@@ -13,4 +13,8 @@ class User(Base):
     balance = Column(Integer, nullable=False, default=0)  # баланс
     subscription = Column(String, nullable=False)  # уровни подписок
 
+    phone = Column(String, nullable=False)
+    telegram_id = Column(String, nullable=True)
+
+
 

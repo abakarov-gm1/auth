@@ -26,3 +26,4 @@ def update_status(phone):
     finally:
         session.close()
 
+
