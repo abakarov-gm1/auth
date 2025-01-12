@@ -2,7 +2,8 @@ from pydantic import BaseModel
 
 
 class RegistryModel(BaseModel):
+    phone: str
     name: str
     password: str
-    subscription: str
+    region: str
 

@@ -1,8 +1,8 @@
-"""two
+"""ss
 
-Revision ID: b34d5d438aa1
+Revision ID: 6c94a455ccce
 Revises: 
-Create Date: 2025-01-10 20:05:53.861236
+Create Date: 2025-01-12 21:18:43.609718
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'b34d5d438aa1'
+revision: str = '6c94a455ccce'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -32,10 +32,14 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('password', sa.String(), nullable=False),
-    sa.Column('is_verified', sa.Integer(), nullable=True),
+    sa.Column('phone', sa.String(), nullable=False),
+    sa.Column('is_verified', sa.Boolean(), nullable=True),
+    sa.Column('telegram_id', sa.String(), nullable=True),
     sa.Column('balance', sa.Integer(), nullable=False),
     sa.Column('subscription', sa.String(), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('region', sa.String(), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('phone')
     )
     # ### end Alembic commands ###
 
