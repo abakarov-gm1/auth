@@ -13,3 +13,11 @@ class Verify(BaseModel):
 class Login(BaseModel):
     phone: str
     password: str
+
+
+class Refresh(BaseModel):
+    user_id: int
+    access_token: str
+    refresh_token: str
+
+

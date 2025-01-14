@@ -1,12 +1,10 @@
 from fastapi import FastAPI
-from routes import login, registry, veryfi_
+from routes import auth
 
 
 app = FastAPI()
 
-app.include_router(login, prefix="/auth")
-app.include_router(registry, prefix="/auth")
-app.include_router(veryfi_, prefix="/auth")
+app.include_router(auth, prefix="/auth")
 
 
 @app.get("/")

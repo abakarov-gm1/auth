@@ -1,6 +1,6 @@
-from services.db_service.UserService import get_user, create_user
-from use_cases.auth.login import pwd_context
-from use_cases.auth.veryfy_phone import send_sms
+from controllers.auth.login import pwd_context
+from controllers.auth.veryfy_phone import send_sms
+from services.user_service import get_user, create_user
 
 
 def hash_password(password: str) -> str:

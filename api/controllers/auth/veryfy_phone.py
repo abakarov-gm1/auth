@@ -1,8 +1,8 @@
 import random
 import requests
 
-from services.db_service.UserService import update_status
-from services.db_service.otp_service import validate_otp, otp_storage_time, opt_create
+from services.otp_service import opt_create, validate_otp, otp_storage_time
+from services.user_service import update_status
 
 APP_KEY = "VJE190N841KGED5V624GD9EOFOB7XG89D819V56O1Y6B29P6I59792X991OGYY49"
 
