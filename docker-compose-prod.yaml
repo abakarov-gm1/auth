@@ -28,8 +28,8 @@ services:
 
   api:
     build:
-      context: ./api
-      dockerfile: docker/nginx/Dockerfile
+      context: ./api/docker/nginx
+      dockerfile: Dockerfile
     volumes:
       - ./api:/app
     networks:
@@ -88,3 +88,4 @@ volumes:
   uploads:
   db-volume:
     driver: local
+  letsencrypt:  # Хранилище для сертификатов Let's Encrypt

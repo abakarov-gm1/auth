@@ -1,6 +1,6 @@
 from controllers.auth.login import pwd_context
 from controllers.auth.veryfy_phone import send_sms
-from services.user_service import get_user, create_user
+from services.user_service import get_user_login_service, create_user
 
 
 def hash_password(password: str) -> str:
@@ -8,7 +8,7 @@ def hash_password(password: str) -> str:
 
 
 def registry_cases(data):
-    if get_user(data.phone):
+    if get_user_login_service(data.phone):
         return {"message": "номер уже зарегестрирован !"}
     password = hash_password(data.password)
     create_user(data.phone, data.name, password, data.region)

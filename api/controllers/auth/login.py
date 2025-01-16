@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from passlib.context import CryptContext
 from jose import jwt
 from schemas.auth_model import Login
-from services.user_service import get_user
+from services.user_service import get_user_login_service
 from conf.redis import redis_connection
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -44,7 +44,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 def login_case(data: Login):
-    user = get_user(data.phone)
+    user = get_user_login_service(data.phone)
     if not user:
         return {"message": "user is not found"}
 

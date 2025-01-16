@@ -13,6 +13,15 @@ services:
     networks:
       - dev
 
+  bot:
+    build:
+      context: ./bot
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ./bot:/app
+    networks:
+      - dev
+
   db-postgres:
     image: postgres:14.1-alpine
     environment:
@@ -25,6 +34,7 @@ services:
       - dev
     ports:
       - "5432:5432"
+
 
   redis:
     image: redis:alpine
