@@ -1,7 +1,10 @@
-from http.client import HTTPException
-from fastapi import FastAPI
+import uuid
+
+import requests
 from starlette.responses import HTMLResponse, JSONResponse
 from fastapi import FastAPI, Request, HTTPException
+
+from services.user_service import create_user
 from routes import auth
 from routes import users
 
@@ -20,23 +23,55 @@ def main():
 async def auth_callback(request: Request):
     """Обработка данных из Telegram."""
     data = dict(request.query_params)
-
     return data
-#     # Проверка подписи данных
-#     # if not check_telegram_auth(data):
-#     #     raise HTTPException(status_code=403, detail="Invalid authentication data")
+
+
+# @app.get("/f")
+# async def auth_callback(request: Request):
+#     return request.query_params
 #
-#     # Проверка срока действия (должно быть меньше 24 часов)
-#     # auth_date = data.get("auth_date")
-#     # if not auth_date or time.time() - int(auth_date) > 86400:
-#     #     raise HTTPException(status_code=403, detail="Authentication data expired")
+#     data_test = {
+#         "id": "1690141834",
+#         "first_name": "АГМ",
+#         "username": "abakarov_5",
+#         "auth_date": "1737114931",
+#         "hash": "88183ae3089407a39e898354c661a8dc98ce2f6c2f268a46d406c7f78609a898"
+#     }
 #
-#     # Успешная аутентификация
-#     return JSONResponse(content={
-#         "id": data.get("id"),
-#         "first_name": data.get("first_name"),
-#         "last_name": data.get("last_name"),
-#         "username": data.get("username"),
-#         "photo_url": data.get("photo_url"),
-#     })
+#     create_user(name=data_test["first_name"], telegram_id=data_test["id"], telegram_username=data_test["username"])
+#     return data_test
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@app.post("/teleg")
+def post_telegram():
+    BOT_TOKEN = "7866999033:AAHIDFptopNsvFBc00DXKvM7dPc0Q_gkL0Y"
+    CHAT_ID = "7866999033"
+    MESSAGE = "/start"
+    URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    payload = {
+        "chat_id": CHAT_ID,
+        "text": MESSAGE
+    }
+    response = requests.post(URL, data=payload)
+    if response.status_code == 200:
+        print("Сообщение отправлено успешно!")
+    else:
+        print(f"Ошибка отправки сообщения: {response.status_code}, {response.text}")
 

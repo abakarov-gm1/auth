@@ -34,3 +34,6 @@ def add_user_balance(user_id: int, data: UpdateBalance):
 def put_user_subscription(user_id: int, data: Subscription):
     return update_subscription(user_id, data)
 
+
+
+

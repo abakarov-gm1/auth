@@ -1,12 +1,29 @@
 from conf.database import get_session
 from models.db.user_model import User
+from sqlalchemy import null
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.inspection import inspect
 
 
-def create_user(phone, name, password, region, subscription="base"):
+def create_user(
+        phone=None,
+        name=None,
+        password=None,
+        region=None,
+        subscription="base",
+        telegram_id=None,
+        telegram_username=None
+):
     session = get_session()
-    new_user = User(phone=phone, name=name, password=password, subscription=subscription, region=region)
+    new_user = User(
+        phone=phone,
+        name=name,
+        password=password,
+        subscription=subscription,
+        region=region,
+        telegram_id=telegram_id,
+        telegram_username=telegram_username
+    )
     session.add(new_user)
     session.commit()
     session.close()
