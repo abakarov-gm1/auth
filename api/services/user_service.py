@@ -138,3 +138,11 @@ def update_subscription(user_id, subscription):
 
     finally:
         session.close()
+
+
+def check_phone_telegram_id(user_phone, telegram_id):
+    session = get_session()
+    user = session.query(User).filter(User.phone == user_phone and User.telegram_id == telegram_id).first()
+    if user:
+        return True
+    return False

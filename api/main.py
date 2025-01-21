@@ -1,17 +1,15 @@
-import uuid
-
 import requests
 from starlette.responses import HTMLResponse, JSONResponse
 from fastapi import FastAPI, Request, HTTPException
 
 from services.user_service import create_user
-from routes import auth
-from routes import users
+from routes import auth, auth_telegram, users
 
 app = FastAPI()
 
 app.include_router(auth, prefix="/auth")
 app.include_router(users, prefix="/api")
+app.include_router(auth_telegram, prefix="/telegram")
 
 
 @app.get("/")
@@ -26,20 +24,22 @@ async def auth_callback(request: Request):
     return data
 
 
-# @app.get("/f")
-# async def auth_callback(request: Request):
-#     return request.query_params
-#
-#     data_test = {
-#         "id": "1690141834",
-#         "first_name": "АГМ",
-#         "username": "abakarov_5",
-#         "auth_date": "1737114931",
-#         "hash": "88183ae3089407a39e898354c661a8dc98ce2f6c2f268a46d406c7f78609a898"
-#     }
-#
-#     create_user(name=data_test["first_name"], telegram_id=data_test["id"], telegram_username=data_test["username"])
-#     return data_test
+@app.get("/f")
+async def auth_callback(request: Request):
+
+    data_test = {
+        "phone": "79280679861",
+        "region": "russian",
+        "password": "1122",
+        "id": "1690141834",
+        "first_name": "АГМ",
+        "username": "abakarov_5",
+        "auth_date": "1737408354",
+        "hash": "8b86836a9d7f323c67c94f56550210e6cde51ad03c8f32c10b8aae0f8904eba7"
+    }
+
+    create_user(name=data_test["first_name"], telegram_id=data_test["id"], telegram_username=data_test["username"])
+    return data_test
 
 
 
