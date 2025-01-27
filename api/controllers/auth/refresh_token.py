@@ -1,8 +1,21 @@
+import os
+
 import redis
-
 from conf.redis import redis_connection
-
 from controllers.auth.login import create_access_token, create_refresh_token
+from jose import jwt
+
+
+SECRET_KEY = os.getenv("SECRET_KEY", "secret")
+ALGORITHM = "HS256"
+
+
+def decode_access_token(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except Exception as e:
+        return {"error": str(e)}
 
 
 def refresh(data):

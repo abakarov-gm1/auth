@@ -4,12 +4,12 @@ from models.db import User
 from models.db import Chat
 
 
-def create_message(text, user_id, chat_id):
+def create_message(text, user_id, chat_id, video=None, photo=None):
     session = get_session()
     try:
         chat = session.query(Chat).filter_by(id=chat_id).first()
         user = session.query(User).get(user_id)
-        message = MessageModel(text=text, user=user, chat=chat)
+        message = MessageModel(text=text, user=user, chat=chat, video=video, photo=photo)
         session.add(message)
         session.commit()
     except Exception as e:

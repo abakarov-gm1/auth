@@ -14,10 +14,11 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 SECRET_KEY = os.getenv("SECRET_KEY", "secret")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 15
-REFRESH_TOKEN_LIFETIME = 15 * 24 * 60 * 60  # 15 дней
+REFRESH_TOKEN_LIFETIME = 15 * 24 * 60 * 60  # 15 days
+ACCESS_TOKEN_TIME = 24 * 15  # 15 days
 
 
-def create_access_token(data: dict, expires_delta: timedelta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)):
+def create_access_token(data: dict, expires_delta: timedelta = timedelta(hours=ACCESS_TOKEN_TIME)):
     to_encode = data.copy()
     expire = datetime.utcnow() + expires_delta
     to_encode.update({"exp": expire})  # Устанавливаем время истечения токена

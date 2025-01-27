@@ -56,7 +56,12 @@ def get_user_login_service(phone):
 
 def get_user_service(user_id):
     session = get_session()
-    return session.query(User).filter(User.id == user_id).first()
+    try:
+        return session.query(User).filter(User.id == user_id).first()
+    except Exception as e:
+        print(e)
+    finally:
+        session.close()
 
 
 def put_user_service(user_id, update_data):
