@@ -18,6 +18,7 @@ class User(Base):
     balance = Column(Integer, nullable=False, default=0)  # баланс
     subscription = Column(String, nullable=True)  # уровни подписок
     region = Column(String, nullable=True)
+    photo = Column(String, nullable=True)
 
     chats = relationship('Chat', secondary="chat_users",  back_populates="users")
     message = relationship("MessageModel", back_populates="user")

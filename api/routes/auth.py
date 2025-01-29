@@ -1,5 +1,4 @@
-from fastapi import APIRouter
-
+from fastapi import APIRouter, Form, UploadFile, File
 from controllers.auth.login import login_case
 from controllers.auth.registry import registry_cases
 from controllers.auth.veryfy_phone import send_sms, veryfi_phone_cases
@@ -13,8 +12,14 @@ router = APIRouter()
 
 
 @router.post("/registry")
-def registry(data: RegistryModel):
-    return registry_cases(data)
+def registry(
+    phone: str = Form(...),
+    name: str = Form(...),
+    password: str = Form(...),
+    region: str = Form(...),
+    photo: UploadFile = File(...)
+):
+    return registry_cases(phone, name, password, region, photo)
 
 
 @router.post("/login")

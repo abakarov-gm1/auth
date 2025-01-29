@@ -1,16 +1,19 @@
 from typing import List
 from starlette.responses import HTMLResponse, JSONResponse
 from fastapi import FastAPI, Request, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.staticfiles import StaticFiles
 from controllers.auth.refresh_token import decode_access_token
-from services.chat_service import add_users_to_chat_service, get_users_from_chat_service
 from services.message_service import create_message, get_last_message, get_all_messages
 from routes import auth, auth_telegram, users, chat_router
+
+from conf import UPLOAD_DIR
 
 app = FastAPI()
 app.include_router(auth, prefix="/auth")
 app.include_router(users, prefix="/api")
 app.include_router(auth_telegram, prefix="/telegram")
 app.include_router(chat_router, prefix="/chat")
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 
 @app.get("/")
@@ -488,9 +491,9 @@ async def websocket_endpoint(websocket: WebSocket, chat_id: int, token: str):
 
     try:
         # тут надо еще доработать
-        # messages = get_all_messages(chat_id)
-        # for message in messages:
-        #     await websocket.send_text(f"{message.user.name}:  {message.text}")
+        messages = get_all_messages(chat_id)
+        for message in messages:
+            await websocket.send_text(f"{message.user.name}:  {message.text}")
         print(manager.active_connections)
         while True:
             try:

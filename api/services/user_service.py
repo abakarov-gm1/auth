@@ -12,7 +12,8 @@ def create_user(
         region=None,
         subscription="base",
         telegram_id=None,
-        telegram_username=None
+        telegram_username=None,
+        photo=None
 ):
     session = get_session()
     new_user = User(
@@ -22,7 +23,8 @@ def create_user(
         subscription=subscription,
         region=region,
         telegram_id=telegram_id,
-        telegram_username=telegram_username
+        telegram_username=telegram_username,
+        photo=photo
     )
     session.add(new_user)
     session.commit()

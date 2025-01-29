@@ -10,4 +10,4 @@ class Otp(Base):
     phone = Column(String, nullable=False)
     otp = Column(Integer, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
-    expires_at = Column(DateTime, default=lambda: datetime.utcnow() + timedelta(minutes=1))
+    expires_at = Column(DateTime, default=lambda: datetime.utcnow() + timedelta(minutes=3))
