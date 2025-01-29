@@ -3,23 +3,22 @@ from controllers.auth.login import login_case
 from controllers.auth.registry import registry_cases
 from controllers.auth.veryfy_phone import send_sms, veryfi_phone_cases
 from schemas.auth_model import Login, Verify, Refresh
-from schemas.registry_model import RegistryModel
 from schemas.auth_model import SendSms
 from controllers.auth.refresh_token import refresh
-
+from typing import Optional
 
 router = APIRouter()
 
 
 @router.post("/registry")
 def registry(
-    phone: str = Form(...),
-    name: str = Form(...),
-    password: str = Form(...),
-    region: str = Form(...),
-    photo: UploadFile = File(...)
+    phone: Optional[str] = Form(None),
+    name: Optional[str] = Form(None),
+    password: Optional[str] = Form(None),
+    region: Optional[str] = Form(None),
+    photo: Optional[UploadFile] = File(None)
 ):
-    return registry_cases(phone, name, password, region, photo)
+    return registry_cases(phone=phone, name=name, password=password, region=region, photo=photo)
 
 
 @router.post("/login")

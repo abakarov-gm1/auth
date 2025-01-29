@@ -5,10 +5,25 @@ from fastapi.staticfiles import StaticFiles
 from controllers.auth.refresh_token import decode_access_token
 from services.message_service import create_message, get_last_message, get_all_messages
 from routes import auth, auth_telegram, users, chat_router
-
+from fastapi.middleware.cors import CORSMiddleware
 from conf import UPLOAD_DIR
 
+
 app = FastAPI()
+
+origins = [
+    "",
+    "",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Разрешаем запросы с этих доменов
+    allow_credentials=True,
+    allow_methods=["*"],  # Разрешаем все HTTP-методы
+    allow_headers=["*"],  # Разрешаем все заголовки
+)
+
 app.include_router(auth, prefix="/auth")
 app.include_router(users, prefix="/api")
 app.include_router(auth_telegram, prefix="/telegram")
@@ -23,7 +38,6 @@ def main():
 
 @app.get("/test")
 async def auth_callback(request: Request):
-    """Обработка данных из Telegram."""
     data = dict(request.query_params)
     return data
 

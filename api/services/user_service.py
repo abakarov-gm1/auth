@@ -67,7 +67,7 @@ def get_user_service(user_id):
 
 
 def put_user_service(user_id, update_data):
-    update_data = update_data.dict()
+
     session = get_session()
 
     try:

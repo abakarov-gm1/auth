@@ -1,4 +1,7 @@
-from fastapi import APIRouter
+import os
+from typing import Optional
+
+from fastapi import APIRouter, UploadFile, File, Form
 from services.user_service import (get_user_service,
                                        put_user_service,
                                        get_balance,
@@ -6,6 +9,7 @@ from services.user_service import (get_user_service,
                                        update_subscription)
 from schemas.user_model import UpdateUser, UpdateBalance, Subscription
 
+from conf import UPLOAD_DIR
 
 router = APIRouter()
 
@@ -16,7 +20,21 @@ def get_user(user_id: int):
 
 
 @router.put('/profile')
-def put_user(user_id: int, update_data: UpdateUser):
+def put_user(
+        user_id: int,
+        name: Optional[str] = Form(None),
+        phone: Optional[str] = Form(None),
+        balance: Optional[int] = Form(None),
+        region: Optional[str] = Form(None),
+        photo: Optional[UploadFile] = File(None)
+):
+    photo_path = None
+    if photo is not None:
+        photo_path = os.path.join(UPLOAD_DIR, photo.filename)
+        with open(photo_path, "wb") as buffer:
+            buffer.write(photo.file.read())
+
+    update_data = {"name": name, "phone": phone, "balance": balance, "region": region, "photo": photo_path}
     return put_user_service(user_id, update_data)
 
 
