@@ -28,7 +28,7 @@ services:
 
   api:
     build:
-      context: ./api/docker/nginx
+      context: auth/api/docker/nginx
       dockerfile: Dockerfile
     volumes:
       - ./api:/app
@@ -48,7 +48,7 @@ services:
 
   fast-api:
     build:
-      context: ./api
+      context: auth/api
       dockerfile: docker/dev/Dockerfile
 #    ports:
 #      - "8000:8000"

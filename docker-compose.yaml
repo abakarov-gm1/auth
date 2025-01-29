@@ -4,12 +4,12 @@ services:
 
   fast-api:
     build:
-      context: ./api
+      context: auth/api
       dockerfile: docker/dev/Dockerfile
     ports:
       - "8000:8000"
     volumes:
-      - ./api:/app
+      - ./auth/api:/app
     networks:
       - dev
     environment:
@@ -21,10 +21,10 @@ services:
 
   bot:
     build:
-      context: ./bot
+      context: auth/bot
       dockerfile: docker/Dockerfile
     volumes:
-      - ./bot:/app
+      - ./auth/bot:/app
     networks:
       - dev
 
