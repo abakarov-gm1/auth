@@ -1,7 +1,11 @@
+import os
+import uuid
 from typing import List
 from starlette.responses import HTMLResponse, JSONResponse
 from fastapi import FastAPI, Request, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
+
+
 from controllers.auth.refresh_token import decode_access_token
 from services.message_service import create_message, get_last_message, get_all_messages
 from routes import auth, auth_telegram, users, chat_router
@@ -344,130 +348,138 @@ async def auth_callback(request: Request):
 
 
 
-html = '''
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Chat</title>
-    </head>
-    <body>
-        <h1>WebSocket Chat</h1>
-
-        <form action="" onsubmit="sendMessage(event)">
-            <input type="file" id="messageFile" autocomplete="off"/>
-            <button>Send</button>
-        </form>
-
-        <form action="" onsubmit="sendMessageText(event)">
-            <input type="text" id="messageText" autocomplete="off"/>
-            <button>Send</button>
-        </form>
-
-        <ul id="messages"></ul>
-
-        <script>
-            // Получаем токен
-            var token = localStorage.getItem("token");
-            var ws;
-            
-            function openWebSocket() {
-                
-                var ws = new WebSocket("ws://localhost:8000/ws/1/" + token);
-            
-                
-                ws.onopen = function() {
-                    console.log("WebSocket соединение открыто.");
-                };
-                
-                ws.onmessage = function(event) {
-                    var messages = document.getElementById("messages");
-                    var message = document.createElement("li");
-    
-                    // Если сервер отправляет бинарные данные (например, изображение)
-                    if (event.data instanceof Blob) {
-                        var blobUrl = URL.createObjectURL(event.data); // Создаём URL для бинарных данных
-                        var img = document.createElement("img");
-                        img.src = blobUrl;
-                        img.style.maxWidth = "300px"; // Задаём ограничение размера изображения
-                        message.appendChild(img);
-                    } else {
-                        // Если сервер отправляет текстовые данные
-                        var content = document.createTextNode(event.data);
-                        message.appendChild(content);
-                    }
-    
-                    messages.appendChild(message);
-                };
-                
-                ws.onerror = function(error) {
-                    console.error("Ошибка WebSocket: ", error);
-                };
-
-                ws.onclose = function(event) {
-                    console.log("WebSocket соединение закрыто. Попытка переподключения...");
-                    setTimeout(openWebSocket, 2000);  // Попытка переподключиться через 3 секунды
-                };
-                
-                return ws;
-            }
-            
-            var ws = openWebSocket()
-            
-            //ws.onclose = function(event) {
-            //    console.log("WebSocket соединение закрыто. Попытка переподключения...");
-            //    setTimeout(openWebSocket, 2000);  // Попытка переподключиться через 3 секунды
-            //};
-            
-            
-            // Открываем WebSocket-соединение
-            function sendMessageText(event) {
-                 var input = document.getElementById("messageText")
-                 if (ws.readyState === WebSocket.OPEN) {
-                     ws.send(input.value);
-                     input.value = '';
-                     event.preventDefault()
-                 }else {
-                     console.error("WebSocket соединение не открыто.");
-                 }
-                 
-                 //ws.send(input.value)
-                 //input.value = ''
-                 //event.preventDefault()
-            }
-
-            // Функция отправки файлов через WebSocket
-            function sendMessage(event) {
-                event.preventDefault();
-
-                var input = document.getElementById("messageFile");
-                var file = input.files[0]; // Получаем первый файл из инпута
-                console.log(file)
-                if (file && ws.readyState === WebSocket.OPEN) {
-                    var reader = new FileReader();
-
-                reader.onload = function () {
-                    ws.send(reader.result);
-                };
-
-                reader.readAsArrayBuffer(file);
-                } else if (!file) {
-                    alert("Выберите файл для отправки.");
-                } else {
-                    console.error("WebSocket соединение не открыто.");
-                }
-            
-                input.value = "";
-            }
-        </script>
-    </body>
-</html>
-
-'''
+# html = '''
+# <!DOCTYPE html>
+# <html>
+#     <head>
+#         <title>Chat</title>
+#     </head>
+#     <body>
+#         <h1>WebSocket Chat</h1>
+#
+#         <form action="" onsubmit="sendMessage(event)">
+#             <input type="file" id="messageFile" autocomplete="off"/>
+#             <button>Send</button>
+#         </form>
+#
+#         <form action="" onsubmit="sendMessageText(event)">
+#             <input type="text" id="messageText" autocomplete="off"/>
+#             <button>Send</button>
+#         </form>
+#
+#         <ul id="messages"></ul>
+#
+#         <script>
+#             // Получаем токен
+#             var token = localStorage.getItem("token");
+#             var ws;
+#
+#             function openWebSocket() {
+#
+#                 var ws = new WebSocket("ws://localhost:8000/ws/1/" + token);
+#
+#
+#                 ws.onopen = function() {
+#                     console.log("WebSocket соединение открыто.");
+#                 };
+#
+#                 ws.onmessage = function(event) {
+#                     var messages = document.getElementById("messages");
+#                     var message = document.createElement("li");
+#
+#                     // Если сервер отправляет бинарные данные (например, изображение)
+#                     if (event.data instanceof Blob) {
+#                         var blobUrl = URL.createObjectURL(event.data); // Создаём URL для бинарных данных
+#                         var img = document.createElement("img");
+#                         img.src = blobUrl;
+#                         img.style.maxWidth = "300px"; // Задаём ограничение размера изображения
+#                         message.appendChild(img);
+#                     } else {
+#                         // Если сервер отправляет текстовые данные
+#                         var content = document.createTextNode(event.data);
+#                         message.appendChild(content);
+#                     }
+#
+#                     messages.appendChild(message);
+#                 };
+#
+#                 ws.onerror = function(error) {
+#                     console.error("Ошибка WebSocket: ", error);
+#                 };
+#
+#                 ws.onclose = function(event) {
+#                     console.log("WebSocket соединение закрыто. Попытка переподключения...");
+#                     setTimeout(openWebSocket, 2000);  // Попытка переподключиться через 3 секунды
+#                 };
+#
+#                 return ws;
+#             }
+#
+#             var ws = openWebSocket()
+#
+#             //ws.onclose = function(event) {
+#             //    console.log("WebSocket соединение закрыто. Попытка переподключения...");
+#             //    setTimeout(openWebSocket, 2000);  // Попытка переподключиться через 3 секунды
+#             //};
+#
+#
+#             // Открываем WebSocket-соединение
+#             function sendMessageText(event) {
+#                  var input = document.getElementById("messageText")
+#                  if (ws.readyState === WebSocket.OPEN) {
+#                      ws.send(input.value);
+#                      input.value = '';
+#                      event.preventDefault()
+#                  }else {
+#                      console.error("WebSocket соединение не открыто.");
+#                  }
+#
+#                  //ws.send(input.value)
+#                  //input.value = ''
+#                  //event.preventDefault()
+#             }
+#
+#             // Функция отправки файлов через WebSocket
+#             function sendMessage(event) {
+#                 event.preventDefault();
+#
+#                 var input = document.getElementById("messageFile");
+#                 var file = input.files[0]; // Получаем первый файл из инпута
+#                 console.log(file)
+#
+#                 if (file && ws.readyState === WebSocket.OPEN) {
+#                     var reader = new FileReader();
+#
+#                 reader.onload = function () {
+#                     if (file.type.startsWith("image/")) {
+#                         console.log("Отправка изображения...");
+#                     } else if (file.type.startsWith("video/")) {
+#                         console.log("Отправка видео...");
+#                     } else {
+#                         console.log("Отправка другого файла...");
+#                     }
+#                     ws.send(reader.result);
+#                 };
+#
+#                 reader.readAsArrayBuffer(file);
+#                 } else if (!file) {
+#                     alert("Выберите файл для отправки.");
+#                 } else {
+#                     console.error("WebSocket соединение не открыто.");
+#                 }
+#
+#                 input.value = "";
+#             }
+#         </script>
+#     </body>
+# </html>
+#
+# '''
 
 
 @app.get("/q")
 async def get():
-    return HTMLResponse(html)
+    return HTMLResponse(content=open("chat.html").read(), status_code=200)
 
 
 class ConnectionManager:
@@ -504,11 +516,20 @@ async def websocket_endpoint(websocket: WebSocket, chat_id: int, token: str):
     decode_data = dict(decode_access_token(token))
 
     try:
-        # тут надо еще доработать
+
         messages = get_all_messages(chat_id)
         for message in messages:
-            await websocket.send_text(f"{message.user.name}:  {message.text}")
-        print(manager.active_connections)
+            if message.photo is not None:
+                file_path = message.photo
+                try:
+                    with open(file_path, "rb") as file:
+                        file_bytes = file.read()
+                        await websocket.send_bytes(file_bytes)
+                except FileNotFoundError:
+                    await websocket.send_text(f"Ошибка: файл {file_path} не найден")
+            else:
+                await websocket.send_text(f"{message.user.name}:  {message.text}")
+
         while True:
             try:
 
@@ -518,8 +539,16 @@ async def websocket_endpoint(websocket: WebSocket, chat_id: int, token: str):
                     create_message(data.get("text"), decode_data.get("user_id"), chat_id)
                     message = get_last_message()
                     await manager.broadcast(f"{message.user.name}: {message.text}")
+
                 if data.get("bytes"):
+                    file_name = f"{uuid.uuid4().hex}.bin"
+                    file_path = os.path.join(UPLOAD_DIR, file_name)
+                    with open(file_path, "wb") as file:
+                        file.write(data['bytes'])
+                    create_message(text=None, user_id=decode_data.get("user_id"), chat_id=chat_id, photo=file_path)
                     await manager.broadcast_file(data['bytes'])
+
+                    # await websocket.send_text(file_path)
 
             except Exception as e:
                 print(e, ".../disconnected")
@@ -529,6 +558,9 @@ async def websocket_endpoint(websocket: WebSocket, chat_id: int, token: str):
     except WebSocketDisconnect as e:
         print(f"Client disconnected with code: {e.code}, reason: {e.reason}")
         manager.disconnect(websocket)
+
+
+
 
 
 
