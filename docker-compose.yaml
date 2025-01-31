@@ -15,6 +15,7 @@ services:
     environment:
       UPLOAD_DIR: uploads
       SMS_SERVICE_KEY: VJE190N841KGED5V624GD9EOFOB7XG89D819V56O1Y6B29P6I59792X991OGYY49
+      JWT_SECRET_KEY: secret
       POSTGRES_USER: user
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: user
@@ -60,3 +61,4 @@ volumes:
   uploads:
   db-volume:
     driver: local
+

@@ -21,3 +21,7 @@ class Refresh(BaseModel):
     refresh_token: str
 
 
+class ResetPassword(BaseModel):
+    phone: str
+    new_password: str
+    confirm_password: str

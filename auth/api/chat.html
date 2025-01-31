@@ -1,274 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html>-->
-<!--     <head>-->
-<!--         <title>Chat</title>-->
-<!--     </head>-->
-<!--     <body>-->
-<!--         <h1>WebSocket Chat</h1>-->
-
-<!--         <form action="" onsubmit="sendMessage(event)">-->
-<!--             <input type="file" id="messageFile" autocomplete="off"/>-->
-<!--             <button>Send</button>-->
-<!--         </form>-->
-
-<!--         <form action="" onsubmit="sendMessageText(event)">-->
-<!--             <input type="text" id="messageText" autocomplete="off"/>-->
-<!--             <button>Send</button>-->
-<!--         </form>-->
-
-<!--         <ul id="messages"></ul>-->
-
-<!--         <script>-->
-<!--             // Получаем токен-->
-<!--             var token = localStorage.getItem("token");-->
-<!--             var ws;-->
-
-<!--             function openWebSocket() {-->
-
-<!--                 var ws = new WebSocket("ws://localhost:8000/ws/1/" + token);-->
-
-
-<!--                 ws.onopen = function() {-->
-<!--                     console.log("WebSocket соединение открыто.");-->
-<!--                 };-->
-
-<!--                 ws.onmessage = function(event) {-->
-<!--                     var messages = document.getElementById("messages");-->
-<!--                     var message = document.createElement("li");-->
-<!--                     console.log("EVENT", event.data)-->
-<!--                     // Если сервер отправляет бинарные данные (например, изображение)-->
-
-<!--                     if (event.data instanceof Blob) {-->
-<!--                         var blobUrl = URL.createObjectURL(event.data); // Создаём URL для бинарных данных-->
-<!--                         // var img = document.createElement("img");-->
-<!--                         // img.src = blobUrl;-->
-<!--                         // img.style.maxWidth = "300px"; // Задаём ограничение размера изображения-->
-<!--                         // message.appendChild(img);-->
-
-<!--                         var video = document.createElement("video");-->
-<!--                         video.src = blobUrl;-->
-<!--                         video.controls = true;-->
-<!--                         video.style.maxWidth = "300px";-->
-<!--                         message.appendChild(video);-->
-
-<!--                     } else {-->
-<!--                         // Если сервер отправляет текстовые данные-->
-<!--                         var content = document.createTextNode(event.data);-->
-<!--                         message.appendChild(content);-->
-<!--                     }-->
-
-<!--                     messages.appendChild(message);-->
-<!--                 };-->
-
-<!--                 ws.onerror = function(error) {-->
-<!--                     console.error("Ошибка WebSocket: ", error);-->
-<!--                 };-->
-
-<!--                 ws.onclose = function(event) {-->
-<!--                     console.log("WebSocket соединение закрыто. Попытка переподключения...");-->
-<!--                     setTimeout(openWebSocket, 2000);  // Попытка переподключиться через 3 секунды-->
-<!--                 };-->
-
-<!--                 return ws;-->
-<!--             }-->
-
-<!--             var ws = openWebSocket()-->
-
-<!--             //ws.onclose = function(event) {-->
-<!--             //    console.log("WebSocket соединение закрыто. Попытка переподключения...");-->
-<!--             //    setTimeout(openWebSocket, 2000);  // Попытка переподключиться через 3 секунды-->
-<!--             //};-->
-
-
-<!--             // Открываем WebSocket-соединение-->
-<!--             function sendMessageText(event) {-->
-<!--                  var input = document.getElementById("messageText")-->
-<!--                  if (ws.readyState === WebSocket.OPEN) {-->
-<!--                      ws.send(input.value);-->
-<!--                      input.value = '';-->
-<!--                      event.preventDefault()-->
-<!--                  }else {-->
-<!--                      console.error("WebSocket соединение не открыто.");-->
-<!--                  }-->
-
-<!--                  //ws.send(input.value)-->
-<!--                  //input.value = ''-->
-<!--                  //event.preventDefault()-->
-<!--             }-->
-
-<!--             // Функция отправки файлов через WebSocket-->
-<!--             function sendMessage(event) {-->
-<!--                 event.preventDefault();-->
-
-<!--                 var input = document.getElementById("messageFile");-->
-<!--                 var file = input.files[0]; // Получаем первый файл из инпута-->
-<!--                 console.log(file)-->
-
-<!--                 if (file && ws.readyState === WebSocket.OPEN) {-->
-<!--                     var reader = new FileReader();-->
-
-<!--                 reader.onload = function () {-->
-<!--                     if (file.type.startsWith("image/")) {-->
-<!--                         console.log("Отправка изображения...");-->
-<!--                     } else if (file.type.startsWith("video/")) {-->
-<!--                         console.log("Отправка видео...");-->
-<!--                     } else {-->
-<!--                         console.log("Отправка другого файла...");-->
-<!--                     }-->
-
-<!--                     ws.send(reader.result);-->
-<!--                 };-->
-
-<!--                 reader.readAsArrayBuffer(file);-->
-<!--                 } else if (!file) {-->
-<!--                     alert("Выберите файл для отправки.");-->
-<!--                 } else {-->
-<!--                     console.error("WebSocket соединение не открыто.");-->
-<!--                 }-->
-
-<!--                 input.value = "";-->
-<!--             }-->
-<!--         </script>-->
-<!--     </body>-->
-<!--</html>-->
-
-<!--<!DOCTYPE html>-->
-<!--<html>-->
-<!--     <head>-->
-<!--         <title>Chat</title>-->
-<!--     </head>-->
-<!--     <body>-->
-<!--         <h1>WebSocket Chat</h1>-->
-
-<!--         <form action="" onsubmit="sendMessage(event)">-->
-<!--             <input type="file" id="messageFile" autocomplete="off"/>-->
-<!--             <button>Send</button>-->
-<!--         </form>-->
-
-<!--         <form action="" onsubmit="sendMessageText(event)">-->
-<!--             <input type="text" id="messageText" autocomplete="off"/>-->
-<!--             <button>Send</button>-->
-<!--         </form>-->
-
-<!--         <ul id="messages"></ul>-->
-
-<!--         <script>-->
-<!--             // Получаем токен-->
-<!--             var token = localStorage.getItem("token");-->
-<!--             var ws;-->
-
-<!--             function openWebSocket() {-->
-
-<!--                 var ws = new WebSocket("ws://localhost:8000/ws/1/" + token);-->
-
-
-<!--                 ws.onopen = function() {-->
-<!--                     console.log("WebSocket соединение открыто.");-->
-<!--                 };-->
-
-<!--                 ws.onmessage = function(event) {-->
-<!--                     var messages = document.getElementById("messages");-->
-<!--                     var message = document.createElement("li");-->
-<!--                     console.log("EVENT", event.data)-->
-<!--                     // Если сервер отправляет бинарные данные (например, изображение)-->
-
-<!--                     if (event.data instanceof Blob) {-->
-<!--                         var blobUrl = URL.createObjectURL(event.data); // Создаём URL для бинарных данных-->
-<!--                         // var img = document.createElement("img");-->
-<!--                         // img.src = blobUrl;-->
-<!--                         // img.style.maxWidth = "300px"; // Задаём ограничение размера изображения-->
-<!--                         // message.appendChild(img);-->
-
-<!--                         var video = document.createElement("video");-->
-<!--                         video.src = blobUrl;-->
-<!--                         video.controls = true;-->
-<!--                         video.style.maxWidth = "300px";-->
-<!--                         message.appendChild(video);-->
-
-<!--                     } else {-->
-<!--                         // Если сервер отправляет текстовые данные-->
-<!--                         var content = document.createTextNode(event.data);-->
-<!--                         message.appendChild(content);-->
-<!--                     }-->
-
-<!--                     messages.appendChild(message);-->
-<!--                 };-->
-
-<!--                 ws.onerror = function(error) {-->
-<!--                     console.error("Ошибка WebSocket: ", error);-->
-<!--                 };-->
-
-<!--                 ws.onclose = function(event) {-->
-<!--                     console.log("WebSocket соединение закрыто. Попытка переподключения...");-->
-<!--                     setTimeout(openWebSocket, 2000);  // Попытка переподключиться через 3 секунды-->
-<!--                 };-->
-
-<!--                 return ws;-->
-<!--             }-->
-
-<!--             var ws = openWebSocket()-->
-
-<!--             //ws.onclose = function(event) {-->
-<!--             //    console.log("WebSocket соединение закрыто. Попытка переподключения...");-->
-<!--             //    setTimeout(openWebSocket, 2000);  // Попытка переподключиться через 3 секунды-->
-<!--             //};-->
-
-
-<!--             // Открываем WebSocket-соединение-->
-<!--             function sendMessageText(event) {-->
-<!--                  var input = document.getElementById("messageText")-->
-<!--                  if (ws.readyState === WebSocket.OPEN) {-->
-<!--                      ws.send(input.value);-->
-<!--                      input.value = '';-->
-<!--                      event.preventDefault()-->
-<!--                  }else {-->
-<!--                      console.error("WebSocket соединение не открыто.");-->
-<!--                  }-->
-
-<!--                  //ws.send(input.value)-->
-<!--                  //input.value = ''-->
-<!--                  //event.preventDefault()-->
-<!--             }-->
-
-<!--             // Функция отправки файлов через WebSocket-->
-<!--             function sendMessage(event) {-->
-<!--                 event.preventDefault();-->
-
-<!--                 var input = document.getElementById("messageFile");-->
-<!--                 var file = input.files[0]; // Получаем первый файл из инпута-->
-<!--                 console.log(file)-->
-
-<!--                 if (file && ws.readyState === WebSocket.OPEN) {-->
-<!--                     var reader = new FileReader();-->
-
-<!--                 reader.onload = function () {-->
-<!--                     if (file.type.startsWith("image/")) {-->
-<!--                         console.log("Отправка изображения...");-->
-<!--                     } else if (file.type.startsWith("video/")) {-->
-<!--                         console.log("Отправка видео...");-->
-<!--                     } else {-->
-<!--                         console.log("Отправка другого файла...");-->
-<!--                     }-->
-
-<!--                     ws.send(reader.result);-->
-<!--                 };-->
-
-<!--                 reader.readAsArrayBuffer(file);-->
-<!--                 } else if (!file) {-->
-<!--                     alert("Выберите файл для отправки.");-->
-<!--                 } else {-->
-<!--                     console.error("WebSocket соединение не открыто.");-->
-<!--                 }-->
-
-<!--                 input.value = "";-->
-<!--             }-->
-<!--         </script>-->
-<!--     </body>-->
-<!--</html>-->
-
-
-
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -490,3 +219,277 @@
 
 </body>
 </html>
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--     <head>-->
+<!--         <title>Chat</title>-->
+<!--     </head>-->
+<!--     <body>-->
+<!--         <h1>WebSocket Chat</h1>-->
+
+<!--         <form action="" onsubmit="sendMessage(event)">-->
+<!--             <input type="file" id="messageFile" autocomplete="off"/>-->
+<!--             <button>Send</button>-->
+<!--         </form>-->
+
+<!--         <form action="" onsubmit="sendMessageText(event)">-->
+<!--             <input type="text" id="messageText" autocomplete="off"/>-->
+<!--             <button>Send</button>-->
+<!--         </form>-->
+
+<!--         <ul id="messages"></ul>-->
+
+<!--         <script>-->
+<!--             // Получаем токен-->
+<!--             var token = localStorage.getItem("token");-->
+<!--             var ws;-->
+
+<!--             function openWebSocket() {-->
+
+<!--                 var ws = new WebSocket("ws://localhost:8000/ws/1/" + token);-->
+
+
+<!--                 ws.onopen = function() {-->
+<!--                     console.log("WebSocket соединение открыто.");-->
+<!--                 };-->
+
+<!--                 ws.onmessage = function(event) {-->
+<!--                     var messages = document.getElementById("messages");-->
+<!--                     var message = document.createElement("li");-->
+<!--                     console.log("EVENT", event.data)-->
+<!--                     // Если сервер отправляет бинарные данные (например, изображение)-->
+
+<!--                     if (event.data instanceof Blob) {-->
+<!--                         var blobUrl = URL.createObjectURL(event.data); // Создаём URL для бинарных данных-->
+<!--                         // var img = document.createElement("img");-->
+<!--                         // img.src = blobUrl;-->
+<!--                         // img.style.maxWidth = "300px"; // Задаём ограничение размера изображения-->
+<!--                         // message.appendChild(img);-->
+
+<!--                         var video = document.createElement("video");-->
+<!--                         video.src = blobUrl;-->
+<!--                         video.controls = true;-->
+<!--                         video.style.maxWidth = "300px";-->
+<!--                         message.appendChild(video);-->
+
+<!--                     } else {-->
+<!--                         // Если сервер отправляет текстовые данные-->
+<!--                         var content = document.createTextNode(event.data);-->
+<!--                         message.appendChild(content);-->
+<!--                     }-->
+
+<!--                     messages.appendChild(message);-->
+<!--                 };-->
+
+<!--                 ws.onerror = function(error) {-->
+<!--                     console.error("Ошибка WebSocket: ", error);-->
+<!--                 };-->
+
+<!--                 ws.onclose = function(event) {-->
+<!--                     console.log("WebSocket соединение закрыто. Попытка переподключения...");-->
+<!--                     setTimeout(openWebSocket, 2000);  // Попытка переподключиться через 3 секунды-->
+<!--                 };-->
+
+<!--                 return ws;-->
+<!--             }-->
+
+<!--             var ws = openWebSocket()-->
+
+<!--             //ws.onclose = function(event) {-->
+<!--             //    console.log("WebSocket соединение закрыто. Попытка переподключения...");-->
+<!--             //    setTimeout(openWebSocket, 2000);  // Попытка переподключиться через 3 секунды-->
+<!--             //};-->
+
+
+<!--             // Открываем WebSocket-соединение-->
+<!--             function sendMessageText(event) {-->
+<!--                  var input = document.getElementById("messageText")-->
+<!--                  if (ws.readyState === WebSocket.OPEN) {-->
+<!--                      ws.send(input.value);-->
+<!--                      input.value = '';-->
+<!--                      event.preventDefault()-->
+<!--                  }else {-->
+<!--                      console.error("WebSocket соединение не открыто.");-->
+<!--                  }-->
+
+<!--                  //ws.send(input.value)-->
+<!--                  //input.value = ''-->
+<!--                  //event.preventDefault()-->
+<!--             }-->
+
+<!--             // Функция отправки файлов через WebSocket-->
+<!--             function sendMessage(event) {-->
+<!--                 event.preventDefault();-->
+
+<!--                 var input = document.getElementById("messageFile");-->
+<!--                 var file = input.files[0]; // Получаем первый файл из инпута-->
+<!--                 console.log(file)-->
+
+<!--                 if (file && ws.readyState === WebSocket.OPEN) {-->
+<!--                     var reader = new FileReader();-->
+
+<!--                 reader.onload = function () {-->
+<!--                     if (file.type.startsWith("image/")) {-->
+<!--                         console.log("Отправка изображения...");-->
+<!--                     } else if (file.type.startsWith("video/")) {-->
+<!--                         console.log("Отправка видео...");-->
+<!--                     } else {-->
+<!--                         console.log("Отправка другого файла...");-->
+<!--                     }-->
+
+<!--                     ws.send(reader.result);-->
+<!--                 };-->
+
+<!--                 reader.readAsArrayBuffer(file);-->
+<!--                 } else if (!file) {-->
+<!--                     alert("Выберите файл для отправки.");-->
+<!--                 } else {-->
+<!--                     console.error("WebSocket соединение не открыто.");-->
+<!--                 }-->
+
+<!--                 input.value = "";-->
+<!--             }-->
+<!--         </script>-->
+<!--     </body>-->
+<!--</html>-->
+
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--     <head>-->
+<!--         <title>Chat</title>-->
+<!--     </head>-->
+<!--     <body>-->
+<!--         <h1>WebSocket Chat</h1>-->
+
+<!--         <form action="" onsubmit="sendMessage(event)">-->
+<!--             <input type="file" id="messageFile" autocomplete="off"/>-->
+<!--             <button>Send</button>-->
+<!--         </form>-->
+
+<!--         <form action="" onsubmit="sendMessageText(event)">-->
+<!--             <input type="text" id="messageText" autocomplete="off"/>-->
+<!--             <button>Send</button>-->
+<!--         </form>-->
+
+<!--         <ul id="messages"></ul>-->
+
+<!--         <script>-->
+<!--             // Получаем токен-->
+<!--             var token = localStorage.getItem("token");-->
+<!--             var ws;-->
+
+<!--             function openWebSocket() {-->
+
+<!--                 var ws = new WebSocket("ws://localhost:8000/ws/1/" + token);-->
+
+
+<!--                 ws.onopen = function() {-->
+<!--                     console.log("WebSocket соединение открыто.");-->
+<!--                 };-->
+
+<!--                 ws.onmessage = function(event) {-->
+<!--                     var messages = document.getElementById("messages");-->
+<!--                     var message = document.createElement("li");-->
+<!--                     console.log("EVENT", event.data)-->
+<!--                     // Если сервер отправляет бинарные данные (например, изображение)-->
+
+<!--                     if (event.data instanceof Blob) {-->
+<!--                         var blobUrl = URL.createObjectURL(event.data); // Создаём URL для бинарных данных-->
+<!--                         // var img = document.createElement("img");-->
+<!--                         // img.src = blobUrl;-->
+<!--                         // img.style.maxWidth = "300px"; // Задаём ограничение размера изображения-->
+<!--                         // message.appendChild(img);-->
+
+<!--                         var video = document.createElement("video");-->
+<!--                         video.src = blobUrl;-->
+<!--                         video.controls = true;-->
+<!--                         video.style.maxWidth = "300px";-->
+<!--                         message.appendChild(video);-->
+
+<!--                     } else {-->
+<!--                         // Если сервер отправляет текстовые данные-->
+<!--                         var content = document.createTextNode(event.data);-->
+<!--                         message.appendChild(content);-->
+<!--                     }-->
+
+<!--                     messages.appendChild(message);-->
+<!--                 };-->
+
+<!--                 ws.onerror = function(error) {-->
+<!--                     console.error("Ошибка WebSocket: ", error);-->
+<!--                 };-->
+
+<!--                 ws.onclose = function(event) {-->
+<!--                     console.log("WebSocket соединение закрыто. Попытка переподключения...");-->
+<!--                     setTimeout(openWebSocket, 2000);  // Попытка переподключиться через 3 секунды-->
+<!--                 };-->
+
+<!--                 return ws;-->
+<!--             }-->
+
+<!--             var ws = openWebSocket()-->
+
+<!--             //ws.onclose = function(event) {-->
+<!--             //    console.log("WebSocket соединение закрыто. Попытка переподключения...");-->
+<!--             //    setTimeout(openWebSocket, 2000);  // Попытка переподключиться через 3 секунды-->
+<!--             //};-->
+
+
+<!--             // Открываем WebSocket-соединение-->
+<!--             function sendMessageText(event) {-->
+<!--                  var input = document.getElementById("messageText")-->
+<!--                  if (ws.readyState === WebSocket.OPEN) {-->
+<!--                      ws.send(input.value);-->
+<!--                      input.value = '';-->
+<!--                      event.preventDefault()-->
+<!--                  }else {-->
+<!--                      console.error("WebSocket соединение не открыто.");-->
+<!--                  }-->
+
+<!--                  //ws.send(input.value)-->
+<!--                  //input.value = ''-->
+<!--                  //event.preventDefault()-->
+<!--             }-->
+
+<!--             // Функция отправки файлов через WebSocket-->
+<!--             function sendMessage(event) {-->
+<!--                 event.preventDefault();-->
+
+<!--                 var input = document.getElementById("messageFile");-->
+<!--                 var file = input.files[0]; // Получаем первый файл из инпута-->
+<!--                 console.log(file)-->
+
+<!--                 if (file && ws.readyState === WebSocket.OPEN) {-->
+<!--                     var reader = new FileReader();-->
+
+<!--                 reader.onload = function () {-->
+<!--                     if (file.type.startsWith("image/")) {-->
+<!--                         console.log("Отправка изображения...");-->
+<!--                     } else if (file.type.startsWith("video/")) {-->
+<!--                         console.log("Отправка видео...");-->
+<!--                     } else {-->
+<!--                         console.log("Отправка другого файла...");-->
+<!--                     }-->
+
+<!--                     ws.send(reader.result);-->
+<!--                 };-->
+
+<!--                 reader.readAsArrayBuffer(file);-->
+<!--                 } else if (!file) {-->
+<!--                     alert("Выберите файл для отправки.");-->
+<!--                 } else {-->
+<!--                     console.error("WebSocket соединение не открыто.");-->
+<!--                 }-->
+
+<!--                 input.value = "";-->
+<!--             }-->
+<!--         </script>-->
+<!--     </body>-->
+<!--</html>-->
+
+
+
+

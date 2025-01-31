@@ -4,7 +4,8 @@ from .config import (
     SMS_SERVICE_KEY,
     POSTGRES_DB,
     POSTGRES_PASSWORD,
-    POSTGRES_USER
+    POSTGRES_USER,
+    JWT_SECRET_KEY
 )
 
 

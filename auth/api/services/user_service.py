@@ -1,7 +1,5 @@
 from conf.database import get_session
 from models.db.user_model import User
-from sqlalchemy import null
-from sqlalchemy.exc import NoResultFound
 from sqlalchemy.inspection import inspect
 
 
@@ -153,3 +151,21 @@ def check_phone_telegram_id(user_phone, telegram_id):
     if user:
         return True
     return False
+
+
+def reset_password_service(phone, new_password):
+    session = get_session()
+
+    try:
+        user = session.query(User).filter(User.phone == phone).first()
+        setattr(user, "password", new_password)
+        session.commit()
+        session.refresh(user)
+        return {"message": "success"}
+    except Exception as e:
+        print(e)
+    finally:
+        session.close()
+
+
+

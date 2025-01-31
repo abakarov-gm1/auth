@@ -6,6 +6,8 @@ from schemas.auth_model import Login, Verify, Refresh
 from schemas.auth_model import SendSms
 from controllers.auth.refresh_token import refresh
 from typing import Optional
+from schemas.auth_model import ResetPassword
+from controllers.auth.reset_password import reset_passwd
 
 router = APIRouter()
 
@@ -41,3 +43,7 @@ def veryfi_phone(data: Verify):
 def refresh_token(data: Refresh):
     return refresh(data)
 
+
+@router.post("/reset-password")
+def reset_password(data: ResetPassword):
+    return reset_passwd(data)

@@ -1,17 +1,15 @@
-import os
 import random
 import string
-
-import redis
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
 from jose import jwt
 from schemas.auth_model import Login
 from services.user_service import get_user_login_service
 from conf.redis import redis_connection
+from conf import JWT_SECRET_KEY
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-SECRET_KEY = os.getenv("SECRET_KEY", "secret")
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 15
 REFRESH_TOKEN_LIFETIME = 15 * 24 * 60 * 60  # 15 days
@@ -22,7 +20,7 @@ def create_access_token(data: dict, expires_delta: timedelta = timedelta(hours=A
     to_encode = data.copy()
     expire = datetime.utcnow() + expires_delta
     to_encode.update({"exp": expire})  # Устанавливаем время истечения токена
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 
