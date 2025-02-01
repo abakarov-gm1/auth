@@ -2,6 +2,25 @@ version: "3"
 
 services:
 
+  nginx:
+    build:
+      context: auth/api/docker/nginx
+      dockerfile: Dockerfile
+    restart: always
+    privileged: true
+    hostname: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./auth/api/docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+    networks:
+      - dev
+    depends_on:
+      - fast-api
+
   fast-api:
     build:
       context: auth/api
