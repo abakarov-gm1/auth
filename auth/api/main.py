@@ -2,7 +2,7 @@ import os
 import uuid
 from typing import List
 from starlette.responses import HTMLResponse, JSONResponse
-from fastapi import FastAPI, Request, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Request, HTTPException, WebSocket, WebSocketDisconnect, Header
 from fastapi.staticfiles import StaticFiles
 
 from controllers.auth.refresh_token import decode_access_token
@@ -46,7 +46,18 @@ async def auth_callback(request: Request):
 
 
 @app.get("/q")
+# async def get(token: str = Header(None)):
+# async def get(token: str):
 async def get():
+
+    # if token is None:
+    #     return {"message": "please add your token"}
+    #
+    # decode_token = dict(decode_access_token(token))
+    #
+    # if decode_token.get("error"):
+    #     return {"message: token is invalid"}
+
     return HTMLResponse(content=open("chat.html").read(), status_code=200)
 
 
@@ -79,9 +90,12 @@ manager = ConnectionManager()
 
 @app.websocket("/ws/{chat_id}/{token}")
 async def websocket_endpoint(websocket: WebSocket, chat_id: int, token: str):
-    await manager.connect(websocket)
-
     decode_data = dict(decode_access_token(token))
+
+    if decode_data.get("error"):
+        return  # Прерываем выполнение, клиент не будет добавлен в manager
+
+    await manager.connect(websocket)
 
     try:
 
@@ -116,8 +130,6 @@ async def websocket_endpoint(websocket: WebSocket, chat_id: int, token: str):
                     create_message(text=None, user_id=decode_data.get("user_id"), chat_id=chat_id, file=file_path)
                     await manager.broadcast_file(data['bytes'])
 
-                    # await websocket.send_text(file_path)
-
             except Exception as e:
                 print(e, ".../disconnected")
                 manager.disconnect(websocket)
@@ -125,6 +137,10 @@ async def websocket_endpoint(websocket: WebSocket, chat_id: int, token: str):
 
     except WebSocketDisconnect as e:
         print(f"Client disconnected with code: {e.code}, reason: {e.reason}")
+        manager.disconnect(websocket)
+
+    except Exception as e:
+        print(e, "message.user => not found")
         manager.disconnect(websocket)
 
 

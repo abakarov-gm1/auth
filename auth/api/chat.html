@@ -111,6 +111,7 @@
          function openWebSocket() {
 
              var ws = new WebSocket("ws://localhost:8000/ws/1/" + token);
+             // var ws = new WebSocket("wss://api.abakarov.store/ws/1/" + token);
 
 
              ws.onopen = function() {
