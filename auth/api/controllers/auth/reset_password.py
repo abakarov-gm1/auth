@@ -1,5 +1,5 @@
 from controllers.auth.veryfy_phone import send_sms
-from services.user_service import reset_password_service
+from repositories.user_repository import reset_password_service
 from controllers.auth.registry import hash_password
 
 

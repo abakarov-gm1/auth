@@ -1,7 +1,7 @@
 import os
 from controllers.auth.login import pwd_context
 from controllers.auth.veryfy_phone import send_sms
-from services.user_service import get_user_login_service, create_user
+from repositories.user_repository import get_user_login_service, create_user
 from conf import UPLOAD_DIR
 
 

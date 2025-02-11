@@ -1,6 +1,7 @@
 from conf.database import get_session
 from models.db.user_model import User
 from sqlalchemy.inspection import inspect
+from controllers.decode_access_token import decode_access_token_new
 
 
 def create_user(
@@ -54,10 +55,11 @@ def get_user_login_service(phone):
     return session.query(User).filter(User.phone == phone).first()
 
 
-def get_user_service(user_id):
+def get_user_service(token):
     session = get_session()
+    decode_data = dict(decode_access_token_new(token))
     try:
-        return session.query(User).filter(User.id == user_id).first()
+        return session.query(User).filter(User.id == decode_data.get("user_id")).first()
     except Exception as e:
         print(e)
     finally:

@@ -17,7 +17,8 @@ services:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/conf/:/etc/letsencrypt/:rw
     networks:
-      - dev
+      #      - dev
+      - my_custom_network
     depends_on:
       - fast-api
 
@@ -30,7 +31,8 @@ services:
     volumes:
       - ./auth/api:/app
     networks:
-      - dev
+      #      - dev
+      - my_custom_network
     environment:
       UPLOAD_DIR: uploads
       SMS_SERVICE_KEY: VJE190N841KGED5V624GD9EOFOB7XG89D819V56O1Y6B29P6I59792X991OGYY49
@@ -46,7 +48,8 @@ services:
     volumes:
       - ./auth/bot:/app
     networks:
-      - dev
+      #      - dev
+      - my_custom_network
 
   db-postgres:
     image: postgres:14.1-alpine
@@ -57,7 +60,8 @@ services:
     volumes:
       - db-volume:/var/lib/postgresql/data
     networks:
-      - dev
+      #      - dev
+      - my_custom_network
     ports:
       - "5432:5432"
 
@@ -70,10 +74,10 @@ services:
     volumes:
       - redis_data:/data
     networks:
-      - dev
-
-networks:
-  dev:
+#      - dev
+      - my_custom_network
+#networks:
+#  dev:
 
 volumes:
   redis_data:
@@ -81,3 +85,7 @@ volumes:
   db-volume:
     driver: local
 
+
+networks:
+  my_custom_network:
+    external: true

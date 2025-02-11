@@ -2,7 +2,7 @@ import os
 from typing import Optional
 
 from fastapi import APIRouter, UploadFile, File, Form
-from services.user_service import (get_user_service,
+from repositories.user_repository import (get_user_service,
                                        put_user_service,
                                        get_balance,
                                        add_balance,
@@ -15,8 +15,8 @@ router = APIRouter()
 
 
 @router.get("/profile")
-def get_user(user_id: int):
-    return get_user_service(user_id)
+def get_user(token: str):
+    return get_user_service(token)
 
 
 @router.put('/profile')

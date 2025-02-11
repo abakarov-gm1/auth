@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from services.chat_service import create_chat_service
+from repositories.chat_repository import create_chat_service
 from schemas.chat_model import CreateChat
 
 

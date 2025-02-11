@@ -1,9 +1,7 @@
 from fastapi import APIRouter
 from fastapi import Request
 from controllers.auth_telegram.authenticate_telegram import authenticate
-
-
-from services.user_service import update_status
+from repositories.user_repository import update_status
 
 router = APIRouter()
 

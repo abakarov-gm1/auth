@@ -1,8 +1,8 @@
 import random
 import requests
 
-from services.otp_service import opt_create, validate_otp, otp_storage_time
-from services.user_service import update_status
+from repositories.otp_repository import opt_create, validate_otp, otp_storage_time
+from repositories.user_repository import update_status
 from conf import SMS_SERVICE_KEY
 
 

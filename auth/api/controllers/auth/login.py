@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from passlib.context import CryptContext
 from jose import jwt
 from schemas.auth_model import Login
-from services.user_service import get_user_login_service
+from repositories.user_repository import get_user_login_service
 from conf.redis import redis_connection
 from conf import JWT_SECRET_KEY
 

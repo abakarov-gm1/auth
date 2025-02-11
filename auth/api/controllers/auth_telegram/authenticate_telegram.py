@@ -1,5 +1,5 @@
 from controllers.auth.login import create_access_token
-from services.user_service import create_user, check_phone_telegram_id, get_user_login_service
+from repositories.user_repository import create_user, check_phone_telegram_id, get_user_login_service
 
 
 def create_token(params):

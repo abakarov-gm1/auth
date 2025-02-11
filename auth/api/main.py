@@ -4,9 +4,8 @@ from typing import List
 from starlette.responses import HTMLResponse, JSONResponse
 from fastapi import FastAPI, Request, HTTPException, WebSocket, WebSocketDisconnect, Header
 from fastapi.staticfiles import StaticFiles
-
 from controllers.auth.refresh_token import decode_access_token
-from services.message_service import create_message, get_last_message, get_all_messages
+from repositories.message_repository import create_message, get_last_message, get_all_messages
 from routes import auth, auth_telegram, users, chat_router
 from fastapi.middleware.cors import CORSMiddleware
 from conf import UPLOAD_DIR
