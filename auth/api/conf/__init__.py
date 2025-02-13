@@ -5,7 +5,8 @@ from .config import (
     POSTGRES_DB,
     POSTGRES_PASSWORD,
     POSTGRES_USER,
-    JWT_SECRET_KEY
+    JWT_SECRET_KEY,
+    RABBIT_URL
 )
 
 

@@ -24,7 +24,7 @@ def registry_cases(phone, name, password, region, photo):
             buffer.write(photo.file.read())
 
     create_user(phone=phone, name=name, password=password, region=region, photo=photo_path)
-    # send_sms(phone)
+    send_sms(phone)
     return {"message": "success"}
 
 

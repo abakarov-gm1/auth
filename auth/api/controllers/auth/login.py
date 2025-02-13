@@ -53,8 +53,13 @@ def login_case(data: Login):
     if not user.is_verified:
         return {"message": "phone is not verified"}
 
+    # если номер телефона отсутствует в редисе, то создаем новый токен и закидываем его в redis
+    # вместе с его токеном, а если номер есть то вытаскиваем токен
+    # это нагружает систему
+    # лучше использовать черный список токенов
+
     access_token = create_access_token(data={"user_id": user.id})
 
-    refresh_token = create_refresh_token(access_token, user.id)
+    # refresh_token = create_refresh_token(access_token, user.id)
 
-    return {"access_token": access_token, "refresh_token": refresh_token}
+    return {"access_token": access_token}
