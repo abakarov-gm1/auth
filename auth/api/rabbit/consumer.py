@@ -1,29 +1,45 @@
+import sys
+import os
 import pika
+import json
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from controllers.decode_access_token import decode_access_token_new
-from producer import publish_message
+from repositories.user_repository import get_user_service
+
 
 RABBITMQ_HOST = "rabbitmq"  # Или "localhost", если не в Docker
 RABBITMQ_USER = "user"
 RABBITMQ_PASS = "password"
-QUEUE_NAME = "get_user"
-
 credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASS)
-parameters = pika.ConnectionParameters(host=RABBITMQ_HOST, credentials=credentials)
-connection = pika.BlockingConnection(parameters)
-channel = connection.channel()
-channel.queue_declare(queue=QUEUE_NAME, durable=True)
+
+with pika.BlockingConnection(pika.ConnectionParameters(host=RABBITMQ_HOST, credentials=credentials)) as connection:
+    channel = connection.channel()
+
+    channel.queue_declare(queue='rpc_queue')
 
 
-def callback(ch, method, properties, body):
-    if method.routing_key == "get_user":
+    def on_request(ch, method, props, body):
         token = body.decode()
-        payload = decode_access_token_new(token)
-        publish_message(queue_name="get_user_response", message=payload)
-        pass
+        user = get_user_service(token)
+        if user:
+            user_dict = {key: value for key, value in user.__dict__.items() if not key.startswith("_")}
+            user_json = json.dumps(user_dict)
+        else:
+            user_json = json.dumps({"error": "User not found"})
+
+        print("Отправляем JSON:", user_json)
+
+        ch.basic_publish(
+            exchange='',
+            routing_key=props.reply_to,
+            properties=pika.BasicProperties(correlation_id=props.correlation_id),
+            body=user_json
+        )
+        ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
-channel.basic_consume(queue=QUEUE_NAME, on_message_callback=callback, auto_ack=True)
+    # channel.basic_qos(prefetch_count=1)
+    channel.basic_consume(queue='rpc_queue', on_message_callback=on_request)
 
-
-print("Ожидание сообщений. Для выхода нажми CTRL+C")
-channel.start_consuming()
+    print(" Консюмер начал слушать:")
+    channel.start_consuming()

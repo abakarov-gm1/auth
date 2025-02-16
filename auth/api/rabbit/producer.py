@@ -1,22 +1,37 @@
-import pika
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from conf.config import RABBIT_URL
+
+# import sys
+# import os
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+# from controllers.decode_access_token import decode_access_token_new
+#
+# RABBITMQ_HOST = "rabbitmq"  # Или "localhost", если не в Docker
+# RABBITMQ_USER = "user"
+# RABBITMQ_PASS = "password"
+# import pika
+#
+# # Подключаемся к RabbitMQ
+# credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASS)
+# connection = pika.BlockingConnection(pika.ConnectionParameters(host=RABBITMQ_HOST, credentials=credentials))
+# channel = connection.channel()
+#
+# # Имя очереди
+# queue_name = 'rpc_queue'
+#
+# # Получаем одно сообщение (без удаления)
+# method_frame, header_frame, body = channel.basic_get(queue=queue_name, auto_ack=False)
+#
+#
+# print(method_frame)
+# print(header_frame)
+# print(body)
+#
+# # if method_frame:
+# #     print(f"Сообщение: {body.decode()}")
+# # else:
+# #     print("Очередь пуста")
+#
+#
+# connection.close()
 
 
-def publish_message(queue_name: str, message: str):
-    params = pika.URLParameters(RABBIT_URL)
-    connection = pika.BlockingConnection(params)
-    channel = connection.channel()
-
-    channel.queue_declare(queue=queue_name, durable=True)
-    channel.basic_publish(
-        exchange="",
-        routing_key=queue_name,
-        body=message.encode(),
-        properties=pika.BasicProperties(delivery_mode=2)  # Сообщение сохраняется при перезапуске
-    )
-
-    connection.close()
 
